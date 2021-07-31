@@ -8,8 +8,8 @@ console.log('reading', file);
 const stream = fs.createReadStream(file, { highWaterMark: 16 });
 let lonBuffer;
 let latBuffer;
-let lonBufferArr = [];
-let latBufferArr = [];
+let longitudes = [];
+let latitudes = [];
 let lonRegex = new RegExp("lon=\"(.*?)\"");
 let latRegex = new RegExp("lat=\"(.*?)\"");
 const interestingNumber = 6; // number of characters in regex not part of the capturing group
@@ -18,13 +18,13 @@ stream.on('data', chunk => {
   lonBuffer += chunk.toString();
   latBuffer += chunk.toString();
 
-  const lonRes = bufferEm(lonBuffer, lonBufferArr, lonRegex);
+  const lonRes = bufferEm(lonBuffer, longitudes, lonRegex);
   lonBuffer = lonRes.buffer;
-  lonBufferArr = lonRes.bufferArr;
+  longitudes = lonRes.bufferArr;
 
-  const latRes = bufferEm(latBuffer, latBufferArr, latRegex);
+  const latRes = bufferEm(latBuffer, latitudes, latRegex);
   latBuffer = latRes.buffer;
-  latBufferArr = latRes.bufferArr;
+  latitudes = latRes.bufferArr;
 });
 
 function bufferEm(buffer, bufferArr, regex) {
@@ -43,13 +43,31 @@ stream.on('end', () => {
   console.log('END')
 
   console.log("LON")
-  console.log(lonBufferArr)
-  console.log(lonBufferArr.length)
+  console.log(longitudes)
+  console.log(longitudes.length)
 
   console.log("LAT")
-  console.log(lonBufferArr)
-  console.log(lonBufferArr.length)
+  console.log(longitudes)
+  console.log(longitudes.length)
+
+  const points = mapEm(latitudes, longitudes)
+  //console.log("MAPPED")
+  //console.log(mapped)
+
+  doTheActualThing(points)
 });
+
+function mapEm(latitudes, longitudes) {
+  if (latitudes.length !== longitudes.length) throw Error()
+  return latitudes.map((lat, idx) => ({
+    latitude: lat,
+    longitude: longitudes[idx]
+  }));
+}
+
+function doTheActualThing(points) {
+
+}
 
 stream.on('error', console.error);
 
