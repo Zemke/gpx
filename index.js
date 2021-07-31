@@ -53,8 +53,9 @@ stream.on('end', () => {
   console.log(longitudes.length)
 
   const points = mapEm(latitudes, longitudes)
-  //console.log("POINTS")
+  console.log("POINTS")
   //console.log(points)
+  console.log(points.length)
 
   doTheActualThing(points)
 });
