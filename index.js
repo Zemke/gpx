@@ -53,18 +53,15 @@ stream.on('end', () => {
   console.log(longitudes.length)
 
   const points = mapEm(latitudes, longitudes)
-  //console.log("MAPPED")
-  //console.log(mapped)
+  //console.log("POINTS")
+  //console.log(points)
 
   doTheActualThing(points)
 });
 
 function mapEm(latitudes, longitudes) {
   if (latitudes.length !== longitudes.length) throw Error()
-  return latitudes.map((lat, idx) => ({
-    latitude: lat,
-    longitude: longitudes[idx]
-  }));
+  return latitudes.map((lat, idx) => [ longitudes[idx], lat ]);
 }
 
 function doTheActualThing(points) {
