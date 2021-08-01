@@ -71,8 +71,8 @@ stream.on('end', () => {
 
   let stage = 1;
   let pointIdx = 0;
-  for (let targetIdx = 0; targetIdx < targets.length; targetIdx++) {
-    const target = targets[targetIdx];
+  for (let targetIdx = 0; targetIdx <= targets.length; targetIdx++) {
+    const target = targetIdx < targets.length  ? targets[targetIdx] : points[points.length-1];
     console.log('target', target, `${target.lat}, ${target.lon}`)
 
     const nearest = geo.findNearest(target, points, accuracy);
