@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const file = process.argv[2];
 const target = { lat: parseFloat(process.argv[3]), lon: parseFloat(process.argv[4]) };
-const accuracy = 100; // distance accuracy in meters
+const accuracy = 1; // distance accuracy in meters
 
 console.log('reading', file);
 
