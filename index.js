@@ -3,11 +3,19 @@ const fs = require('fs');
 const template = require('./template');
 
 const file = process.argv[2];
-const name = process.argv[3]
-const target = { lat: parseFloat(process.argv[4]), lon: parseFloat(process.argv[5]) };
+const name = process.argv[4]
+const targets = fs.readFileSync(process.argv[3], 'utf8')
+    .split('\n')
+    .filter(l => l.trim() !== '')
+    .map(l => {
+      const [ lat, lon ] = l.split(' ')
+      return { lat, lon };
+    });
+
 const accuracy = 1; // distance accuracy in meters
 
 console.log('reading', file);
+console.log('targets', targets);
 
 const stream = fs.createReadStream(file, { highWaterMark: 16 });
 let lonBuffer;
@@ -59,22 +67,35 @@ stream.on('end', () => {
   //console.log(points)
   console.log(points.length)
 
-  console.log('target', target, `${target.lat}, ${target.lon}`)
-  const nearest = geo.findNearest(target, points, accuracy);
-  console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
+  fs.mkdirSync('./stages')
 
-  const stage = 1; // TODO continuous stages
-  const writeStream = fs.createWriteStream(`./${name}_${stage}.gpx`);
-  writeStream.write(template.start(name, stage), 'utf8')
-  for (const geopoint of points) {
-    writeStream.write(template.point(geopoint), 'utf8')
-    if (geopoint.lat === nearest.lat && geopoint.lon === nearest.lon) {
-      break;
+  let stage = 1;
+  let pointIdx = 0;
+  for (let targetIdx = 0; targetIdx < targets.length; targetIdx++) {
+    const target = targets[targetIdx];
+    console.log('target', target, `${target.lat}, ${target.lon}`)
+
+    const nearest = geo.findNearest(target, points, accuracy);
+    console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
+
+
+    const writeStream = fs.createWriteStream(`./stages/${name}_${stage}.gpx`);
+    writeStream.write(template.start(name, stage), 'utf8')
+    if (targetIdx !== 0) {
+      writeStream.write(template.point(targets[targetIdx-1]));
     }
+    for (; pointIdx < points.length; pointIdx++) {
+      const geopoint = points[pointIdx];
+      writeStream.write(template.point(geopoint), 'utf8')
+      if (geopoint.lat === nearest.lat && geopoint.lon === nearest.lon) {
+        break;
+      }
+    }
+    writeStream.write(template.point(target));
+    writeStream.write(template.end(), 'utf8')
+    writeStream.end()
+    stage++
   }
-  writeStream.write(template.point(target));
-  writeStream.write(template.end(), 'utf8')
-  writeStream.end()
 });
 
 function mapEm(latitudes, longitudes) {
