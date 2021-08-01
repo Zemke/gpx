@@ -27,8 +27,6 @@ stream.on('data', chunk => {
   const latRes = bufferEm(latBuffer, latitudes, latRegex);
   latBuffer = latRes.buffer;
   latitudes = latRes.bufferArr;
-
-  // TODO most recent geopoint where distance didn't increase and return early
 });
 
 function bufferEm(buffer, bufferArr, regex) {
