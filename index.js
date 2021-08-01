@@ -2,6 +2,8 @@ const geo = require('geolib');
 const fs = require('fs');
 
 const file = process.argv[2];
+const target = { lat: parseFloat(process.argv[3]), lon: parseFloat(process.argv[4]) };
+const accuracy = 100; // distance accuracy in meters
 
 console.log('reading', file);
 
@@ -35,7 +37,7 @@ function bufferEm(buffer, bufferArr, regex) {
     const bufferCloneSplit = buffer.slice().split('')
     bufferCloneSplit.splice(0, match.index+match[1].length+interestingNumber-1)
     buffer = bufferCloneSplit.join('')
-    bufferArr.push(match[1])
+    bufferArr.push(parseFloat(match[1]))
     match = buffer.match(regex)
   }
   return { buffer, bufferArr }
@@ -49,25 +51,21 @@ stream.on('end', () => {
   console.log(longitudes.length)
 
   console.log("LAT")
-  console.log(longitudes)
-  console.log(longitudes.length)
+  console.log(latitudes)
+  console.log(latitudes.length)
 
   const points = mapEm(latitudes, longitudes)
   console.log("POINTS")
   //console.log(points)
   console.log(points.length)
 
-  doTheActualThing(points)
+  console.log('target', target)
+  console.log('nearest', geo.findNearest(target, points, accuracy));
 });
 
 function mapEm(latitudes, longitudes) {
   if (latitudes.length !== longitudes.length) throw Error()
-  return latitudes.map((lat, idx) => [ longitudes[idx], lat ]);
+  return latitudes.map((lat, idx) => ({ lat, lon: longitudes[idx] }));
 }
-
-function doTheActualThing(points) {
-
-}
-
 stream.on('error', console.error);
 
