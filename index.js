@@ -1,8 +1,10 @@
 const geo = require('geolib');
 const fs = require('fs');
+const template = require('./template');
 
 const file = process.argv[2];
-const target = { lat: parseFloat(process.argv[3]), lon: parseFloat(process.argv[4]) };
+const name = process.argv[3]
+const target = { lat: parseFloat(process.argv[4]), lon: parseFloat(process.argv[5]) };
 const accuracy = 1; // distance accuracy in meters
 
 console.log('reading', file);
@@ -10,8 +12,8 @@ console.log('reading', file);
 const stream = fs.createReadStream(file, { highWaterMark: 16 });
 let lonBuffer;
 let latBuffer;
-let longitudes = [];
-let latitudes = [];
+let longitudes = []; // TODO remember elevation
+let latitudes = []; // TODO remember elevation
 let lonRegex = new RegExp("lon=\"(.*?)\"");
 let latRegex = new RegExp("lat=\"(.*?)\"");
 const interestingNumber = 6; // number of characters in regex not part of the capturing group
@@ -60,11 +62,25 @@ stream.on('end', () => {
   console.log('target', target, `${target.lat}, ${target.lon}`)
   const nearest = geo.findNearest(target, points, accuracy);
   console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
+
+  const stage = 1; // TODO continuous stages
+  const writeStream = fs.createWriteStream(`./${name}_${stage}.gpx`);
+  writeStream.write(template.start(name, stage), 'utf8')
+  for (const geopoint of points) {
+    writeStream.write(template.point(geopoint), 'utf8')
+    if (geopoint.lat === nearest.lat && geopoint.lon === nearest.lon) {
+      break;
+    }
+  }
+  writeStream.write(template.point(target));
+  writeStream.write(template.end(), 'utf8')
+  writeStream.end()
 });
 
 function mapEm(latitudes, longitudes) {
   if (latitudes.length !== longitudes.length) throw Error()
   return latitudes.map((lat, idx) => ({ lat, lon: longitudes[idx] }));
 }
+
 stream.on('error', console.error);
 
