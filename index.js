@@ -60,7 +60,8 @@ stream.on('end', () => {
   console.log(points.length)
 
   console.log('target', target)
-  console.log('nearest', geo.findNearest(target, points, accuracy));
+  const nearest = geo.findNearest(target, points, accuracy);
+  console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
 });
 
 function mapEm(latitudes, longitudes) {
