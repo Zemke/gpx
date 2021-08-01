@@ -57,7 +57,7 @@ stream.on('end', () => {
   //console.log(points)
   console.log(points.length)
 
-  console.log('target', target)
+  console.log('target', target, `${target.lat}, ${target.lon}`)
   const nearest = geo.findNearest(target, points, accuracy);
   console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
 });
