@@ -1,33 +1,35 @@
-# Split GPX file into multiple GPX files along checkpoints
-
-This script allows you to take one large GPX file and pass it any number of geo points
-at which the GPX file is split resulting in multiple GPX files.
+Split GPX track at pre-defined geopoints, set start and direction of track.
 
 ## Usage
 
-Assuming you have a GPX file `all.gpx` containing the whole Weser-Radweg and
-a `targets.txt` containing a list of geo points where for instance your campgrounds are.
-
-Example `targets.txt` where each line is the latitude/longitude geo point of where
-to split the GPX file.
-
-```txt
-51.64477103651391 9.446645230506876
-52.109372247820104 9.348323173566138
-52.510299 9.079769
-53.114239 8.833046
-53.731154 8.528058
-```
-
-Run this command passing first the whole GPX file and the file with line-separated geo points:
-
 ```console
-node index.js ~Desktop/weser/all.gpx targets.txt Weser
+node index.js hohe-mark-route.gpx targets.txt "Hohe Mark" --reverse --start 51.827551,7.282159
 ```
 
-In a directory `stages` six GPX files have been written representing each segment. \
-The use case could be that each of this segment represents a day from campground to campground
-on your multi-day bicycle road trip.
+`hohe-mark-route.gpx` is a single GPX track that you want to split. \
+Supply `--reverse` if you want the direction to be reserved.a \
+Supply `--start` along with a starting geo coordinate to let the route start there
+(useful for round trips).
+
+You may set environment variable `ELE_0=1` to default elevations to 0. At the moment elevation
+is ignored entirely.
+
+## Use Case
+
+You want to go on a multi-day bike trip and for every day you want to know your route from
+the place where you stayed for the night back to the route and then to your next place.
+
+The original route is followed until a point is reached where you're closest to your next
+destination. From there a straight line is drawn to that place. \
+You'll therefore get a GPX track for every day of your trip.
+
+Here's an example of the whole route and the individual days split from it.
+
+## TODO
+
+- include elevation dat
+- show ascend, descend, distance for every segment
+- web interface with visualizations
 
 🚲
 
