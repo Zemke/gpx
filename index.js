@@ -28,8 +28,8 @@ let lonBuffer;
 let latBuffer;
 let longitudes = []; // TODO remember elevation
 let latitudes = []; // TODO remember elevation
-let lonRegex = new RegExp("lon=\"(.*?)\"");
-let latRegex = new RegExp("lat=\"(.*?)\"");
+let lonRegex = new RegExp("(?:\\s|^)lon=\"(.*?)\"");
+let latRegex = new RegExp("(?:\\s|^)lat=\"(.*?)\"");
 const interestingNumber = 6; // number of characters in regex not part of the capturing group
 
 stream.on('data', chunk => {
