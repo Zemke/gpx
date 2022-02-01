@@ -93,6 +93,7 @@ stream.on('end', () => {
 
   fs.mkdirSync('./stages')
 
+  const R = [];
   let stage = 1;
   let pointIdx = 0;
   for (let targetIdx = 0; targetIdx <= targets.length; targetIdx++) {
@@ -104,23 +105,34 @@ stream.on('end', () => {
     const nearest = geo.findNearest(target, points.slice(pointIdx+1), accuracy);
     console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
 
+    const r = [];
 
-    const writeStream = fs.createWriteStream(`./stages/${filename}_${stage}.gpx`);
-    writeStream.write(template.start(name, stage), 'utf8')
     if (targetIdx !== 0) {
-      writeStream.write(template.point(targets[targetIdx-1]));
+      r.push(targets[targetIdx-1]);
     }
     for (; pointIdx < points.length; pointIdx++) {
       const geopoint = points[pointIdx];
-      writeStream.write(template.point(geopoint), 'utf8')
+      r.push(geopoint);
       if (geopoint.lat === nearest.lat && geopoint.lon === nearest.lon) {
         break;
       }
     }
-    writeStream.write(template.point(target));
+    r.push(target);
+    R.push(r);
+  }
+
+  for (let i = 0; i < R.length; i++) {
+    const stage = i + 1;
+    const writeStream = fs.createWriteStream(`./stages/${filename}_${stage}.gpx`);
+    writeStream.write(template.start(name, stage), 'utf8')
+    for (let k = 0; k < R[i].length; k++) {
+      writeStream.write(template.point(R[i][k]), 'utf8')
+    }
     writeStream.write(template.end(), 'utf8')
     writeStream.end()
-    stage++
+    console.log(
+      'dist', i+1,
+      geo.getPathLength(R[i], distanceFunction=geo.getPreciseDistance) / 1000);
   }
 });
 
