@@ -17,8 +17,8 @@ function start(name, stage) {
 `
 }
 
-function point(geopoint, elevation, time) {
-  elevation = elevation == null && process.env.ELE_0 === '1' ? 0 : elevation;
+function point(geopoint, time) {
+  elevation = geopoint.ele== null && process.env.ELE_0 === '1' ? 0 : geopoint.ele;
   const indent = "      ";
   let str = indent + "";
   str += `<trkpt lat="${geopoint.lat}" lon="${geopoint.lon}">\n`

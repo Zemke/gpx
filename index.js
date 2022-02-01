@@ -27,15 +27,19 @@ const argStart = argStartIdx === -1
 const stream = fs.createReadStream(file, { highWaterMark: 16 });
 let lonBuffer;
 let latBuffer;
-let longitudes = []; // TODO remember elevation
-let latitudes = []; // TODO remember elevation
+let eleBuffer;
+let longitudes = [];
+let latitudes = [];
+let elevations = [];
 let lonRegex = new RegExp("(?:\\s|^)lon=\"(.*?)\"");
 let latRegex = new RegExp("(?:\\s|^)lat=\"(.*?)\"");
+let eleRegex = /<ele>\s*?([0-9.]+)\s*?<\/ele>/is;
 const interestingNumber = 6; // number of characters in regex not part of the capturing group
 
 stream.on('data', chunk => {
   lonBuffer += chunk.toString();
   latBuffer += chunk.toString();
+  eleBuffer += chunk.toString();
 
   const lonRes = bufferEm(lonBuffer, longitudes, lonRegex);
   lonBuffer = lonRes.buffer;
@@ -44,6 +48,10 @@ stream.on('data', chunk => {
   const latRes = bufferEm(latBuffer, latitudes, latRegex);
   latBuffer = latRes.buffer;
   latitudes = latRes.bufferArr;
+
+  const eleRes = bufferEm(eleBuffer, elevations, eleRegex);
+  eleBuffer = eleRes.buffer;
+  elevations = eleRes.bufferArr;
 });
 
 function bufferEm(buffer, bufferArr, regex) {
@@ -64,6 +72,7 @@ stream.on('end', () => {
   if (argReverse) {
     longitudes.reverse();
     latitudes.reverse();
+    elevations.reverse();
     console.log('reversed');
   }
 
@@ -74,8 +83,19 @@ stream.on('end', () => {
   console.log("LAT")
   console.log(latitudes)
   console.log(latitudes.length)
+  console.log("ELE")
+  console.log(elevations)
+  console.log(elevations.length)
 
-  const points = mapEm(latitudes, longitudes)
+  if (longitudes.length != latitudes.length) {
+    throw Error("length of lon and lat don't match");
+  }
+  if (elevations.length != latitudes.length) {
+    console.warn('voiding elevation data as it doesn\'t match number of geopoints');
+    elevations = new Array(latitudes.length).fill(null);
+  }
+
+  const points = mapEm(latitudes, longitudes, elevations);
   console.log("POINTS")
   //console.log(points)
   console.log(points.length)
@@ -136,9 +156,9 @@ stream.on('end', () => {
   }
 });
 
-function mapEm(latitudes, longitudes) {
+function mapEm(latitudes, longitudes, elevations) {
   if (latitudes.length !== longitudes.length) throw Error()
-  return latitudes.map((lat, idx) => ({ lat, lon: longitudes[idx] }));
+  return latitudes.map((lat, idx) => ({ lat, lon: longitudes[idx], ele: elevations[idx] }));
 }
 
 stream.on('error', console.error);
