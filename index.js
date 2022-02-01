@@ -76,13 +76,14 @@ stream.on('end', () => {
     console.log('reversed');
   }
 
+  console.log("LAT")
+  console.log(latitudes)
+  console.log(latitudes.length)
+
   console.log("LON")
   console.log(longitudes)
   console.log(longitudes.length)
 
-  console.log("LAT")
-  console.log(latitudes)
-  console.log(latitudes.length)
   console.log("ELE")
   console.log(elevations)
   console.log(elevations.length)
