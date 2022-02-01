@@ -1,13 +1,13 @@
 function start(name, stage) {
   const s = stage != null ? ` ${stage}` : '';
   return `<?xml version='1.0' encoding='UTF-8'?>
-<gpx version="1.1" creator="https://zemke.io" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<gpx version="1.1" creator="https://gpx.zemke.io" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
   <metadata>
     <name>${name}${s}</name>
+    <time>${new Date().toISOString()}</time>
     <author>
-      <link href="https://gpx.zemke.io">
-        <text>Florian Zemke</text>
-        <type>text/html</type>
+      <name>Florian Zemke</name>
+      <link href="https://zemke.io">
       </link>
     </author>
   </metadata>
