@@ -79,12 +79,25 @@ stream.on('end', () => {
   //console.log(points)
   console.log(points.length)
 
+  if (argStart != null) {
+    const [startLat, startLon] = argStart;
+    const startNearest = geo.findNearest(
+        {lat: startLat, lon: startLon}, points, accuracy);
+    console.log(`start set to ${startLat},${startLon}`
+        + ` nearest is ${startNearest}`);
+    const startIdx = points.findIndex(
+        p => p.lat === startNearest.lat && p.lon === startNearest.lon);
+    points.unshift(...points.splice(startIdx));
+  }
+
   fs.mkdirSync('./stages')
 
   let stage = 1;
   let pointIdx = 0;
   for (let targetIdx = 0; targetIdx <= targets.length; targetIdx++) {
-    const target = targetIdx < targets.length  ? targets[targetIdx] : points[points.length-1];
+    const target = targetIdx < targets.length
+      ? targets[targetIdx]
+      : points[points.length-1];
     console.log('target', target, `${target.lat}, ${target.lon}`)
 
     const nearest = geo.findNearest(target, points, accuracy);
