@@ -17,6 +17,12 @@ const accuracy = 1; // distance accuracy in meters
 console.log('reading', file);
 console.log('targets', targets);
 
+const argReverse = process.argv.includes('--reverse');
+
+const argStartIdx = process.argv.findIndex(a => a === '--start');
+const argStart = argStartIdx === -1
+    ? null : process.argv[argStartIdx+1].split(",");
+
 const stream = fs.createReadStream(file, { highWaterMark: 16 });
 let lonBuffer;
 let latBuffer;
@@ -53,6 +59,12 @@ function bufferEm(buffer, bufferArr, regex) {
 
 stream.on('end', () => {
   console.log('END')
+
+  if (argReverse) {
+    longitudes.reverse();
+    latitudes.reverse();
+    console.log('reversed');
+  }
 
   console.log("LON")
   console.log(longitudes)
