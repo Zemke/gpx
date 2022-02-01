@@ -12,7 +12,8 @@ Supply `--start` along with a starting geo coordinate to let the route start the
 (useful for round trips).
 
 You may set environment variable `ELE_0=1` to default elevations to 0. At the moment elevation
-is ignored entirely.
+is derived from the base GPX file if it provides it. If it's not and `ELE_0` is not `1` then
+there's no elevation.
 
 ## Use Case
 
