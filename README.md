@@ -11,6 +11,15 @@ Supply `--reverse` if you want the direction to be reserved.a \
 Supply `--start` along with a starting geo coordinate to let the route start there
 (useful for round trips).
 
+The `targets.txt` is an ordered line-separated list of comma-separated latitude and longitude
+coordinates of your destinations.
+
+```
+51.89193,6.97189
+51.823689,6.421331
+51.827192,7.063063
+```
+
 You may set environment variable `ELE_0=1` to default elevations to 0. At the moment elevation
 is derived from the base GPX file if it provides it. If it's not and `ELE_0` is not `1` then
 there's no elevation.
