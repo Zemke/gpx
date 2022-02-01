@@ -4,6 +4,7 @@ const template = require('./template');
 
 const file = process.argv[2];
 const name = process.argv[4]
+const filename = name.toLowerCase().replaceAll(/[^a-z0-9-_]/ig, '_');
 const targets = fs.readFileSync(process.argv[3], 'utf8')
     .split('\n')
     .filter(l => l.trim() !== '')
@@ -104,7 +105,7 @@ stream.on('end', () => {
     console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
 
 
-    const writeStream = fs.createWriteStream(`./stages/${name}_${stage}.gpx`);
+    const writeStream = fs.createWriteStream(`./stages/${filename}_${stage}.gpx`);
     writeStream.write(template.start(name, stage), 'utf8')
     if (targetIdx !== 0) {
       writeStream.write(template.point(targets[targetIdx-1]));
