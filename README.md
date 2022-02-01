@@ -25,6 +25,12 @@ You'll therefore get a GPX track for every day of your trip.
 
 Here's an example of the whole route and the individual days split from it.
 
+<img width="1029" alt="Screen Shot 2022-02-01 at 12 30 31" src="https://user-images.githubusercontent.com/3391981/151962640-af211e3b-afb6-4e48-8e53-df8c102dcd1e.png">
+<img width="1029" alt="Screen Shot 2022-02-01 at 12 30 36" src="https://user-images.githubusercontent.com/3391981/151962650-e449e305-ffa1-4ba2-b834-dc4ee50ac356.png">
+<img width="1029" alt="Screen Shot 2022-02-01 at 12 30 39" src="https://user-images.githubusercontent.com/3391981/151962660-1fdaccc8-c09d-4cf2-9737-43f4536675dc.png">
+<img width="1029" alt="Screen Shot 2022-02-01 at 12 30 42" src="https://user-images.githubusercontent.com/3391981/151962664-198b4c3c-709d-4da5-a355-ee24c30ca876.png">
+![day 4](https://user-images.githubusercontent.com/3391981/151962666-a74332b4-e9a4-494b-8ef7-8281ec1cf486.png")
+
 ## TODO
 
 - include elevation dat
