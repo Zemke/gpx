@@ -5,7 +5,7 @@ function start(name, stage) {
   <metadata>
     <name>${name}${s}</name>
     <author>
-      <link href="https://zemke.io">
+      <link href="https://gpx.zemke.io">
         <text>Florian Zemke</text>
         <type>text/html</type>
       </link>
