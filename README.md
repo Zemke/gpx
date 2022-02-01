@@ -33,8 +33,6 @@ Here's an example of the whole route and the individual days split from it.
 
 ## TODO
 
-- include elevation dat
-- show ascend, descend, distance for every segment
 - web interface with visualizations
 
 🚲
