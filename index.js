@@ -9,7 +9,7 @@ const targets = fs.readFileSync(process.argv[3], 'utf8')
     .split('\n')
     .filter(l => l.trim() !== '')
     .map(l => {
-      const [ lat, lon ] = l.split(' ')
+      const [ lat, lon ] = l.split(',')
       return { lat, lon };
     });
 
