@@ -142,8 +142,11 @@ stream.on('end', () => {
     R.push(r);
   }
 
+  const totals = new Array(3).fill(0);
+
   for (let i = 0; i < R.length; i++) {
     const stage = i + 1;
+    console.log(`\nDay ${stage}\n---`);
     const writeStream = fs.createWriteStream(`./stages/${filename}_${stage}.gpx`);
     writeStream.write(template.start(name, stage), 'utf8')
     for (let k = 0; k < R[i].length; k++) {
@@ -151,9 +154,38 @@ stream.on('end', () => {
     }
     writeStream.write(template.end(), 'utf8')
     writeStream.end()
-    console.log(
-      'dist', i+1,
-      geo.getPathLength(R[i], distanceFunction=geo.getPreciseDistance) / 1000);
+    const dist = geo.getPathLength(R[i], distanceFunction=geo.getPreciseDistance) / 1000;
+    console.log('dist', Math.round(dist));
+    if (elevations?.length && !elevations.includes(null)) {
+      const {asc, desc} = R[i].reduce((acc, {ele}, idx, arr) => {
+        if (idx === 0) {
+          return acc;
+        }
+        const prev = arr[idx-1].ele;
+        if (ele == null || prev == null) {
+          return acc;
+        }
+        const diff = ele - prev;
+        if (diff > 0) {
+          acc.asc += diff;
+        } else {
+          acc.desc += Math.abs(diff);
+        }
+        return acc;
+      }, {asc: 0, desc: 0});
+      console.log(' asc', Math.round(asc));
+      console.log('desc', Math.round(desc));
+      totals[0] += dist;
+      totals[1] += asc;
+      totals[2] += desc;
+    }
+  }
+
+  console.log(`\nTotal\n---`);
+  console.log('dist', Math.round(totals[0]));
+  if (elevations?.length && !elevations.includes(null)) {
+    console.log(' asc', Math.round(totals[1]));
+    console.log('desc', Math.round(totals[2]));
   }
 });
 
