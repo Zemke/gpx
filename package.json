@@ -1,14 +1,12 @@
 {
-  "name": "nearest-geopoint",
-  "version": "1.0.0",
-  "description": "",
+  "name": "gpx",
+  "version": "0.0.0",
+  "description": "Plan your multi-day bike trip from a single GPX.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "",
-  "license": "ISC",
+  "license": "GPL-2.0",
   "dependencies": {
     "geolib": "^3.3.1"
   }
 }
+
