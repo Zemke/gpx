@@ -106,7 +106,7 @@ stream.on('end', () => {
     const startNearest = geo.findNearest(
         {lat: startLat, lon: startLon}, points, accuracy);
     console.log(`start set to ${startLat},${startLon}`
-        + ` nearest is ${startNearest}`);
+        + ` nearest is ${JSON.stringify(startNearest)}`);
     const startIdx = points.findIndex(
         p => p.lat === startNearest.lat && p.lon === startNearest.lon);
     points.unshift(...points.splice(startIdx));
