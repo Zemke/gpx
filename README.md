@@ -24,6 +24,10 @@ You may set environment variable `ELE_0=1` to default elevations to 0. At the mo
 is derived from the base GPX file if it provides it. If it's not and `ELE_0` is not `1` then
 there's no elevation.
 
+The result can further be tweaked by setting `MN` and `MX` environment variables which set
+the minimum and maximium kilometeres you want to travel per day. The last day ignores this setting.
+**There are defaults for this which are logged when executing the script.**
+
 ## Use Case
 
 You want to go on a multi-day bike trip and for every day you want to know your route from
