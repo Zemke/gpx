@@ -118,7 +118,9 @@ stream.on('end', () => {
     points.unshift(...points.splice(startIdx));
   }
 
-  fs.mkdirSync('./stages')
+  if (!fs.existsSync('./stages')) {
+    fs.mkdirSync('./stages')
+  }
 
   const R = [];
   let stage = 1;
