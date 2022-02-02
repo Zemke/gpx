@@ -122,6 +122,8 @@ stream.on('end', () => {
       ? targets[targetIdx]
       : points[points.length-1];
     console.log('target', target, `${target.lat}, ${target.lon}`)
+    const writeStream = fs.createWriteStream(`./stages/${filename}_${stage}.gpx`);
+    writeStream.write(template.start(name, stage), 'utf8')
 
     const nearest = geo.findNearest(target, points.slice(pointIdx+1), accuracy);
     console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
@@ -130,14 +132,21 @@ stream.on('end', () => {
 
     if (targetIdx !== 0) {
       r.push(targets[targetIdx-1]);
+      writeStream.write(template.point(targets[targetIdx-1]), 'utf8')
     }
     for (; pointIdx < points.length; pointIdx++) {
       const geopoint = points[pointIdx];
       r.push(geopoint);
+      writeStream.write(template.point(geopoint), 'utf8')
       if (geopoint.lat === nearest.lat && geopoint.lon === nearest.lon) {
         break;
       }
     }
+
+    writeStream.write(template.point(target), 'utf8')
+    writeStream.end(template.end(), 'utf8');
+
+    stage++;
     r.push(target);
     R.push(r);
   }
@@ -147,13 +156,6 @@ stream.on('end', () => {
   for (let i = 0; i < R.length; i++) {
     const stage = i + 1;
     console.log(`\nDay ${stage}\n---`);
-    const writeStream = fs.createWriteStream(`./stages/${filename}_${stage}.gpx`);
-    writeStream.write(template.start(name, stage), 'utf8')
-    for (let k = 0; k < R[i].length; k++) {
-      writeStream.write(template.point(R[i][k]), 'utf8')
-    }
-    writeStream.write(template.end(), 'utf8')
-    writeStream.end()
     const dist = geo.getPathLength(R[i], distanceFunction=geo.getPreciseDistance) / 1000;
     console.log('dist', Math.round(dist));
     if (elevations?.length && !elevations.includes(null)) {
