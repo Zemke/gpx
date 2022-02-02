@@ -36,6 +36,12 @@ let latRegex = new RegExp("(?:\\s|^)lat=\"(.*?)\"");
 let eleRegex = /<ele>\s*?([0-9.]+)\s*?<\/ele>/is;
 const interestingNumber = 6; // number of characters in regex not part of the capturing group
 
+const MN = parseInt(process.env.MN != null ? process.env.MN : 80) * 1000;
+const MX = parseInt(process.env.MX != null ? process.env.MX : 150) * 1000;
+
+console.log('MN', MN);
+console.log('MX', MX);
+
 stream.on('data', chunk => {
   lonBuffer += chunk.toString();
   latBuffer += chunk.toString();
@@ -118,15 +124,34 @@ stream.on('end', () => {
   let stage = 1;
   let pointIdx = 0;
   for (let targetIdx = 0; targetIdx <= targets.length; targetIdx++) {
-    const target = targetIdx < targets.length
-      ? targets[targetIdx]
-      : points[points.length-1];
-    console.log('target', target, `${target.lat}, ${target.lon}`)
     const writeStream = fs.createWriteStream(`./stages/${filename}_${stage}.gpx`);
     writeStream.write(template.start(name, stage), 'utf8')
 
-    const nearest = geo.findNearest(target, points.slice(pointIdx+1), accuracy);
-    console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
+    const lastDay = targetIdx >= targets.length;
+    console.log('last day', lastDay);
+    const target = lastDay ? points.at(-1) : targets[targetIdx];
+    console.log('target', target, `${target.lat}, ${target.lon}`)
+
+    let nearest;
+    if (lastDay) {
+      nearest = target;
+    } else {
+      const remaining = points.slice(pointIdx);
+      const ordered = geo.orderByDistance(target, remaining);
+      for (const ord of ordered) {
+        const distTarget = geo.getPathLength([
+          ...remaining.slice(
+              0, remaining.findIndex(f => f.lat === ord.lat && f.lon === ord.lon)+1),
+          target
+        ]);
+        if (distTarget >= MN && distTarget <= MX) {
+          nearest = ord;
+          break;
+        }
+      }
+      console.log('nearest', nearest, `${nearest.lat}, ${nearest.lon}`);
+    }
+
 
     const r = [];
 
