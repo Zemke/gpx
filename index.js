@@ -36,8 +36,8 @@ let latRegex = new RegExp("(?:\\s|^)lat=\"(.*?)\"");
 let eleRegex = /<ele>\s*?([0-9.]+)\s*?<\/ele>/is;
 const interestingNumber = 6; // number of characters in regex not part of the capturing group
 
-const MN = parseInt(process.env.MN != null ? process.env.MN : 80) * 1000;
-const MX = parseInt(process.env.MX != null ? process.env.MX : 150) * 1000;
+const MN = process.env.MN != null ? parseInt(process.env.MN) * 1000 : -Infinity;
+const MX = process.env.MX != null ? parseInt(process.env.MX) * 1000 : Infinity;
 
 console.log('MN', MN);
 console.log('MX', MX);
