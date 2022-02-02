@@ -28,6 +28,9 @@ The result can further be tweaked by setting `MN` and `MX` environment variables
 the minimum and maximium kilometeres you want to travel per day. The last day ignores this setting.
 **There are defaults for this which are logged when executing the script.**
 
+You can also supply an empty targets file and use `--reverse` and `--start` to create a single
+updated GPX.
+
 ## Use Case
 
 You want to go on a multi-day bike trip and for every day you want to know your route from
